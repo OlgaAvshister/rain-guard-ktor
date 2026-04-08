@@ -1,5 +1,6 @@
 package com.olga.avshister
 
+import com.olga.avshister.features.auth.configureAuthRouting
 import io.ktor.server.application.*
 
 fun main(args: Array<String>) {
@@ -7,6 +8,8 @@ fun main(args: Array<String>) {
 }
 
 fun Application.module() {
+    configureDatabases()
     configureSerialization()
+    configureAuthRouting()
     configureRouting()
 }
