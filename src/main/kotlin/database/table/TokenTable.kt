@@ -10,7 +10,7 @@ import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import java.util.UUID
 
 object TokenTable : LongIdTable("tokens") {
-    private val token = varchar("token", 255)
+    val token = varchar("token", 255)
     private val userId = reference("user_id", UserTable)
 
     fun getTokenById(userId: Long): Token {

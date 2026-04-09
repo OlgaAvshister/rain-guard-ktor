@@ -8,6 +8,10 @@ object UsersService {
         return UsersRepository.getUser(phone)
     }
 
+    fun getUserByToken(token: String): User? {
+        return UsersRepository.getUserByToken(token)
+    }
+
     fun registerNewUser(user: User): User {
         return UsersRepository.registerNewUser(user)
     }

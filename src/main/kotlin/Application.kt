@@ -1,6 +1,7 @@
 package com.olga.avshister
 
 import com.olga.avshister.features.auth.configureAuthRouting
+import com.olga.avshister.features.user.configureUserRouting
 import io.ktor.server.application.*
 
 fun main(args: Array<String>) {
@@ -11,5 +12,6 @@ fun Application.module() {
     configureDatabases()
     configureSerialization()
     configureAuthRouting()
+    configureUserRouting()
     configureRouting()
 }

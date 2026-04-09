@@ -1,5 +1,6 @@
 package com.olga.avshister.features.auth
 
+import com.olga.avshister.Headers
 import com.olga.avshister.domain.Token.Companion.toTokenDTO
 import com.olga.avshister.domain.User.Companion.toUserDTO
 import com.olga.avshister.services.AuthService
@@ -11,7 +12,7 @@ class AuthController(private val call: ApplicationCall) {
     suspend fun authUser(phone: String, smsCode: String) {
         try {
             val (token, user) = AuthService.authUser(phone, smsCode)
-            call.response.headers.append("X-Auth-Token", token.token)
+            call.response.headers.append(Headers.HEADER_TOKEN, token.token)
             call.respond(
                 HttpStatusCode.OK,
                 AuthResponseRemote(

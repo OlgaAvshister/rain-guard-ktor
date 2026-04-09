@@ -11,4 +11,8 @@ object UsersRepository {
     fun getUser(phone: String): User? {
         return UserTable.fetchUser(phone)
     }
+
+    fun getUserByToken(token: String): User? {
+        return UserTable.fetchUserByToken(token)
+    }
 }

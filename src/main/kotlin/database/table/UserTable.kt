@@ -39,4 +39,22 @@ object UserTable : LongIdTable("users") {
                 }
         }
     }
+
+    fun fetchUserByToken(token: String): User? = transaction {
+        val result = (UserTable innerJoin TokenTable)
+            .selectAll()
+            .where { TokenTable.token eq token }
+            .singleOrNull()
+
+        if (result == null) {
+            return@transaction null
+        }
+
+        User(
+            id = result[UserTable.id].value,
+            phone = result[phone],
+            name = result[name],
+            role = User.Role.entries.find { roleValue -> roleValue.name == result[role] } ?: User.Role.CUSTOMER
+        )
+    }
 }
