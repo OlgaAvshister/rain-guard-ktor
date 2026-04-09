@@ -1,5 +1,7 @@
 package com.olga.avshister.features.auth
 
+import com.olga.avshister.features.user.UserDTO
+import com.olga.avshister.features.token.TokenDTO
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -10,8 +12,6 @@ data class AuthReceiveRemote(
 
 @Serializable
 data class AuthResponseRemote(
-    val id: Long,
-    val phone: String,
-    val name: String?,
-    val role: String
+    val token: TokenDTO,
+    val user: UserDTO,
 )

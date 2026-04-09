@@ -1,6 +1,7 @@
 package com.olga.avshister
 
-import com.olga.avshister.database.users.Users
+import com.olga.avshister.database.table.TokenTable
+import com.olga.avshister.database.table.UserTable
 import io.ktor.server.application.Application
 import io.ktor.server.application.log
 import org.jetbrains.exposed.v1.jdbc.Database
@@ -32,6 +33,7 @@ fun configureLocalDatabase() {
 
     transaction {
         // если перечисленных таблиц еще нет, то они будут созданы
-        SchemaUtils.create(Users)
+        SchemaUtils.create(UserTable)
+        SchemaUtils.create(TokenTable)
     }
 }
