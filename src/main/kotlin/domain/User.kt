@@ -3,7 +3,7 @@ package com.olga.avshister.domain
 import com.olga.avshister.features.user.UserDTO
 
 data class User(
-    val id: Long = 0, // поле с автоинкрементом, не во всех запросал нужно его указывать
+    val id: Long = 0, // поле с автоинкрементом, не во всех запросах нужно его указывать
     val phone: String,
     val name: String?,
     val role: Role = Role.CUSTOMER
