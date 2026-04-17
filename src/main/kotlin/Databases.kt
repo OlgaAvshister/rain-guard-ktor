@@ -1,5 +1,6 @@
 package com.olga.avshister
 
+import com.olga.avshister.database.table.CardTable
 import com.olga.avshister.database.table.ProductTable
 import com.olga.avshister.database.table.RentPointTable
 import com.olga.avshister.database.table.TokenTable
@@ -39,5 +40,6 @@ fun configureLocalDatabase() {
         SchemaUtils.create(TokenTable)
         SchemaUtils.create(ProductTable)
         SchemaUtils.create(RentPointTable)
+        SchemaUtils.create(CardTable)
     }
 }
