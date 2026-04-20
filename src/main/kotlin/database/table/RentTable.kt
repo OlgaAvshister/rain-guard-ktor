@@ -4,6 +4,7 @@ import com.olga.avshister.domain.Rent
 import org.jetbrains.exposed.v1.core.and
 import org.jetbrains.exposed.v1.core.dao.id.LongIdTable
 import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.inList
 import org.jetbrains.exposed.v1.core.isNull
 import org.jetbrains.exposed.v1.jdbc.insert
 import org.jetbrains.exposed.v1.jdbc.selectAll
@@ -38,35 +39,33 @@ object RentTable: LongIdTable("rents") {
 
     fun getActiveRent(uid: Long): Rent? {
         return transaction {
-            try {
-                RentTable
-                    .selectAll()
-                    .where { (RentTable.uid eq uid) and (finishRentPointId.isNull()) }
-                    .singleOrNull()
-                    ?.let {
-                        Rent(
-                            customerId = it[RentTable.uid].value,
-                            startedAt = it[startedAt],
-                            productIds = it[productIds],
-                            startRentPointId = it[startRentPointId],
-                            cardNumber = it[cardNumber],
-                            rate = it[rate],
-                        )
-                    }    ?: run {
-                        null
+            RentTable
+                .selectAll()
+                .where { (RentTable.uid eq uid) and (finishRentPointId.isNull()) }
+                .singleOrNull()
+                ?.let {
+                    Rent(
+                        customerId = it[RentTable.uid].value,
+                        startedAt = it[startedAt],
+                        productIds = it[productIds],
+                        startRentPointId = it[startRentPointId],
+                        cardNumber = it[cardNumber],
+                        rate = it[rate],
+                    )
                 }
-            } catch (e: Exception) {
-               null
-            }
         }
     }
 
     fun finishRent(uid: Long, rent: Rent) {
         transaction {
             RentTable
-                .update({ RentTable.uid eq uid }) {
-                    it[finishedAt] = rent.finishRentPointId
+                .update({ (RentTable.uid eq uid) and (finishRentPointId.isNull()) }) {
+                    it[finishedAt] = rent.finishedAt
                     it[finishRentPointId] = rent.finishRentPointId
+                }
+            ProductTable
+                .update( { ProductTable.id inList rent.productIds } ) {
+                    it[rentPointId] = rent.finishRentPointId!!
                 }
         }
     }

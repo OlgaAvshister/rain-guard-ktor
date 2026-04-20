@@ -14,6 +14,6 @@ object RentPointService {
     }
 
     fun finishRent(uid: Long, rent: Rent) {
-        RentPointRepository.startRent(uid, rent)
+        RentPointRepository.finishRent(uid, rent)
     }
 }

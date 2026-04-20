@@ -3,7 +3,6 @@ package com.olga.avshister.domain
 import com.olga.avshister.features.rent.RentDTO
 
 data class Rent(
-    //val id: Long? = null,
     val customerId: Long? = null, // id клиента, не отправляем на бекенд или игнорируем там (должен сам определяться по токену),
     val startedAt: Long, // время начала аренды в Unix-формате,
     val finishedAt: Long? = null, // время завершения аренды (если аренда уже завершена, оплачена),
