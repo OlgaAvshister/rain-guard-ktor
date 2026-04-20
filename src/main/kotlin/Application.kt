@@ -2,6 +2,7 @@ package com.olga.avshister
 
 import com.olga.avshister.features.auth.configureAuthRouting
 import com.olga.avshister.features.card.configureCardsRouting
+import com.olga.avshister.features.rent.configureRentRouting
 import com.olga.avshister.features.rentPoint.configureRentPointsRouting
 import com.olga.avshister.features.user.configureUserRouting
 import io.ktor.server.application.*
@@ -17,5 +18,5 @@ fun Application.module() {
     configureUserRouting()
     configureRentPointsRouting()
     configureCardsRouting()
-    configureRouting()
+    configureRentRouting()
 }

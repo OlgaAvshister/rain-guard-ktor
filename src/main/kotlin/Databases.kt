@@ -3,6 +3,7 @@ package com.olga.avshister
 import com.olga.avshister.database.table.CardTable
 import com.olga.avshister.database.table.ProductTable
 import com.olga.avshister.database.table.RentPointTable
+import com.olga.avshister.database.table.RentTable
 import com.olga.avshister.database.table.TokenTable
 import com.olga.avshister.database.table.UserTable
 import io.ktor.server.application.Application
@@ -41,5 +42,6 @@ fun configureLocalDatabase() {
         SchemaUtils.create(ProductTable)
         SchemaUtils.create(RentPointTable)
         SchemaUtils.create(CardTable)
+        SchemaUtils.create(RentTable)
     }
 }
