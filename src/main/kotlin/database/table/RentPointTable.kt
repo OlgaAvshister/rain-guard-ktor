@@ -11,6 +11,8 @@ import com.olga.avshister.domain.Product
 import com.olga.avshister.domain.RentPoint
 import com.olga.avshister.features.utils.RentPointUtils
 import org.jetbrains.exposed.v1.core.dao.id.LongIdTable
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.jdbc.deleteWhere
 import org.jetbrains.exposed.v1.jdbc.insertAndGetId
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
@@ -68,6 +70,15 @@ object RentPointTable: LongIdTable("rent_points") {
                     availableProducts = productsByRentPointIdNew[rentPoint.id] ?: emptyList()
                 )
             }
+        }
+    }
+
+    fun deleteRenPoint(rentPointId: Long) {
+        transaction {
+            // Сперва удаляем товары из точки
+            ProductTable.deleteWhere { ProductTable.rentPointId eq rentPointId }
+            // Затем саму точку аренды
+            RentPointTable.deleteWhere { RentPointTable.id eq rentPointId }
         }
     }
 

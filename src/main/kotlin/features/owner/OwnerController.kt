@@ -48,4 +48,24 @@ class OwnerController(private val call: ApplicationCall) {
             call.respond(HttpStatusCode.BadRequest, message = "message: ${e.message}, cause: ${e.cause}")
         }
     }
+
+    suspend fun deleteRentPoint(token: String, rentPointId: Long) {
+        try {
+            UsersService.getUserByToken(token)?.let { loggedUser ->
+                if (loggedUser.role == User.Role.OWNER) {
+                    OwnerService.deleteRentPoint(rentPointId)
+                    call.respond(HttpStatusCode.OK)
+                } else {
+                    call.respond(HttpStatusCode.Forbidden, "Удалять точки аренды может только владелец")
+                }
+            } ?: run {
+                call.respond(
+                    HttpStatusCode.Unauthorized,
+                    "Необходима авторизация"
+                )
+            }
+        } catch (e: Exception) {
+            call.respond(HttpStatusCode.BadRequest, message = "message: ${e.message}, cause: ${e.cause}")
+        }
+    }
 }

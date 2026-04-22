@@ -10,6 +10,7 @@ import io.ktor.server.application.Application
 import io.ktor.server.request.header
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
+import io.ktor.server.routing.delete
 import io.ktor.server.routing.post
 import io.ktor.server.routing.routing
 
@@ -21,14 +22,26 @@ fun Application.configureOwnerRouting() {
             OwnerController(call).registerNewUser(token ?: "", user)
         }
         post("/registerProduct") {
-            val token = call.request.header(Headers.HEADER_TOKEN)
             try {
+                val token = call.request.header(Headers.HEADER_TOKEN)
                 call.receive(RegisterProductReceiveRemote::class).let {
                     OwnerController(call).registerProduct(
                         token = token ?: "",
                         rentPointId = it.rentPointId,
                         product = it.product.toDomain())
                 }
+            } catch (e: Exception) {
+                call.respond(HttpStatusCode.BadRequest, message = "message: ${e.message}, cause: ${e.cause}")
+            }
+        }
+        delete("/deleteRentPoint") {
+            try {
+                val token = call.request.header(Headers.HEADER_TOKEN)
+                val rentPointId = call.queryParameters["rentPointId"]?.toLongOrNull()
+                rentPointId?.let {
+                    OwnerController(call).deleteRentPoint(token = token ?: "", rentPointId = it)
+                    call.respond(HttpStatusCode.OK)
+                } ?: call.respond(HttpStatusCode.BadRequest, message = "Не передан id точки аренды")
             } catch (e: Exception) {
                 call.respond(HttpStatusCode.BadRequest, message = "message: ${e.message}, cause: ${e.cause}")
             }
