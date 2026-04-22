@@ -8,4 +8,8 @@ object RentRepository
     fun getActiveRent(uid: Long): Rent? {
         return RentTable.getActiveRent(uid)
     }
+
+    fun getCompletedRents(rentPointId: Long): List<Rent> {
+        return RentTable.getCompletedRents(rentPointId)
+    }
 }

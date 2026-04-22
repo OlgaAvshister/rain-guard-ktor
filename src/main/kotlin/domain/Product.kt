@@ -8,7 +8,6 @@ data class Product(
     val rentPointId: Long = -1,
     val productType: ProductType, // зонт/дождевик
     val article: Long = -1, // поле, которое однозначно закрепляет за собой набор характеристик (несколько товаров с одинаковыми атрибутами должны иметь одинаковый артикул)
-    val image: String,
     val printType: PrintType, // есть принт/нет принта
     val color: Colors,
     val formFactor: FormFactor, // FOLDING (складывающийся)/STICK (трость) для зонта; JACKET (куртка)/ FULLBODY_RAINCOAT для дождевика на всё тело
@@ -61,7 +60,6 @@ data class Product(
                 printType = PrintType.valueOf(this.printType.name),
                 color = this.color,
                 size = this.size,
-                image = this.image,
                 formFactor = FormFactor.valueOf(this.formFactor.name),
                 condition = this.condition ?: ProductCondition.READY
             )

@@ -28,4 +28,23 @@ class RentController(private val call: ApplicationCall) {
             call.respond(HttpStatusCode.BadRequest, message = "message: ${e.message}, cause: ${e.cause}")
         }
     }
+
+    suspend fun getCompletedRents(token: String, rentPointId: Long?) {
+        try {
+            val user = UsersService.getUserByToken(token)
+            user?.let { _ ->
+                rentPointId?.let { pointId ->
+                    val rents = RentService
+                        .getCompletedRents(pointId)
+
+                    val rentsDTO =
+                        rents
+                            .map { it.toDTO() }
+                    call.respond(HttpStatusCode.OK, rentsDTO)
+                } ?: call.respond(HttpStatusCode.BadRequest, message = "Не указан id пункта возврата")
+            } ?: call.respond(HttpStatusCode.Unauthorized, "Пользователь не авторизован")
+        } catch (e: Exception) {
+            call.respond(HttpStatusCode.BadRequest, message = "message: ${e.message}, cause: ${e.cause}")
+        }
+    }
 }

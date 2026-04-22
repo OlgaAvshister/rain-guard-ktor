@@ -7,4 +7,8 @@ object RentService {
     fun getActiveRent(uid: Long): Rent? {
         return RentRepository.getActiveRent(uid)
     }
+
+    fun getCompletedRents(rentPointId: Long): List<Rent> {
+        return RentRepository.getCompletedRents(rentPointId)
+    }
 }

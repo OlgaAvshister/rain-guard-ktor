@@ -12,5 +12,11 @@ fun Application.configureRentRouting() {
             val token = call.request.header(Headers.HEADER_TOKEN)
             RentController(call).getActiveRent(token ?: "")
         }
+
+        get ("/getCompletedRents") {
+            val token = call.request.header(Headers.HEADER_TOKEN)
+            val rentPointId = call.request.queryParameters["rentPointId"]?.toLongOrNull()
+            RentController(call).getCompletedRents(token ?: "", rentPointId)
+        }
     }
 }

@@ -2,6 +2,7 @@ package com.olga.avshister
 
 import com.olga.avshister.features.auth.configureAuthRouting
 import com.olga.avshister.features.card.configureCardsRouting
+import com.olga.avshister.features.owner.configureOwnerRouting
 import com.olga.avshister.features.rent.configureRentRouting
 import com.olga.avshister.features.rentPoint.configureRentPointsRouting
 import com.olga.avshister.features.user.configureUserRouting
@@ -19,4 +20,5 @@ fun Application.module() {
     configureRentPointsRouting()
     configureCardsRouting()
     configureRentRouting()
+    configureOwnerRouting()
 }

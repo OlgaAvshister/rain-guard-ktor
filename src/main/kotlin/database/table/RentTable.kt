@@ -5,6 +5,7 @@ import org.jetbrains.exposed.v1.core.and
 import org.jetbrains.exposed.v1.core.dao.id.LongIdTable
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.core.inList
+import org.jetbrains.exposed.v1.core.isNotNull
 import org.jetbrains.exposed.v1.core.isNull
 import org.jetbrains.exposed.v1.jdbc.insert
 import org.jetbrains.exposed.v1.jdbc.selectAll
@@ -49,6 +50,26 @@ object RentTable: LongIdTable("rents") {
                         startedAt = it[startedAt],
                         productIds = it[productIds],
                         startRentPointId = it[startRentPointId],
+                        cardNumber = it[cardNumber],
+                        rate = it[rate],
+                    )
+                }
+        }
+    }
+
+    fun getCompletedRents(rentPointId: Long): List<Rent> {
+        return transaction {
+            RentTable
+                .selectAll()
+                .where { finishRentPointId.isNotNull() and (finishRentPointId eq rentPointId) }
+                .map {
+                    Rent(
+                        customerId = it[uid].value,
+                        startedAt = it[startedAt],
+                        finishedAt = it[finishedAt],
+                        productIds = it[productIds],
+                        startRentPointId = it[startRentPointId],
+                        finishRentPointId = it[finishRentPointId],
                         cardNumber = it[cardNumber],
                         rate = it[rate],
                     )

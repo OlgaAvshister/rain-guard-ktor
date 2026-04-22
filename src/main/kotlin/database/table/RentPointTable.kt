@@ -4,16 +4,13 @@ import com.olga.avshister.database.table.ProductTable.article
 import com.olga.avshister.database.table.ProductTable.color
 import com.olga.avshister.database.table.ProductTable.condition
 import com.olga.avshister.database.table.ProductTable.formFactor
-import com.olga.avshister.database.table.ProductTable.image
 import com.olga.avshister.database.table.ProductTable.printType
 import com.olga.avshister.database.table.ProductTable.productType
 import com.olga.avshister.database.table.ProductTable.size
 import com.olga.avshister.domain.Product
 import com.olga.avshister.domain.RentPoint
-import com.olga.avshister.features.utils.ProductUtils
 import com.olga.avshister.features.utils.RentPointUtils
 import org.jetbrains.exposed.v1.core.dao.id.LongIdTable
-import org.jetbrains.exposed.v1.core.inList
 import org.jetbrains.exposed.v1.jdbc.insertAndGetId
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
@@ -56,7 +53,6 @@ object RentPointTable: LongIdTable("rent_points") {
                         rentPointId = it[ProductTable.rentPointId].value,
                         productType = it[productType],
                         article = it[article],
-                        image = it[image],
                         printType = it[printType],
                         color = it[color],
                         formFactor = it[formFactor],
