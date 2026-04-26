@@ -13,6 +13,7 @@ import org.jetbrains.exposed.v1.jdbc.batchInsert
 import org.jetbrains.exposed.v1.jdbc.insert
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
+import org.jetbrains.exposed.v1.jdbc.update
 import org.slf4j.LoggerFactory
 
 /**
@@ -105,6 +106,14 @@ object ProductTable: LongIdTable("products") {
                 this[formFactor] = product.formFactor
                 this[size] = product.size
                 this[condition] = product.condition ?: ProductCondition.READY
+            }
+        }
+    }
+
+    fun updateCondition(productId: Long, condition: ProductCondition) {
+        transaction {
+            ProductTable.update({ ProductTable.id eq productId }) {
+                it[ProductTable.condition] = condition
             }
         }
     }
