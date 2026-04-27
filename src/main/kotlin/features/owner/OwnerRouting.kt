@@ -1,8 +1,10 @@
 package com.olga.avshister.features.owner
 
 import com.olga.avshister.Headers
+import com.olga.avshister.domain.RentPoint
 import com.olga.avshister.features.product.ProductDTO.Companion.toDomain
 import com.olga.avshister.features.product.RegisterProductReceiveRemote
+import com.olga.avshister.features.rentPoint.RegisterRentPointReceiveRemote
 import com.olga.avshister.features.user.UserDTO
 import com.olga.avshister.features.user.UserDTO.Companion.toDomain
 import io.ktor.http.HttpStatusCode
@@ -42,6 +44,26 @@ fun Application.configureOwnerRouting() {
                     OwnerController(call).deleteRentPoint(token = token ?: "", rentPointId = it)
                     call.respond(HttpStatusCode.OK)
                 } ?: call.respond(HttpStatusCode.BadRequest, message = "Не передан id точки аренды")
+            } catch (e: Exception) {
+                call.respond(HttpStatusCode.BadRequest, message = "message: ${e.message}, cause: ${e.cause}")
+            }
+        }
+        post("/registerRentPoint") {
+            try {
+                val token = call.request.header(Headers.HEADER_TOKEN)
+                call.receive(RegisterRentPointReceiveRemote::class).let {
+                    OwnerController(call).registerRentPoint(
+                        token = token ?: "",
+                        rentPoint = RentPoint(
+                            name = it.name,
+                            address = it.fullAddress,
+                            latitude = it.latitude,
+                            longitude = it.longitude,
+                            workHours = it.workHours,
+                        )
+                    )
+                    call.respond(HttpStatusCode.OK)
+                }
             } catch (e: Exception) {
                 call.respond(HttpStatusCode.BadRequest, message = "message: ${e.message}, cause: ${e.cause}")
             }

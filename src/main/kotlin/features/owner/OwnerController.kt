@@ -1,6 +1,8 @@
 package com.olga.avshister.features.owner
 
+import com.olga.avshister.database.table.TokenTable.token
 import com.olga.avshister.domain.Product
+import com.olga.avshister.domain.RentPoint
 import com.olga.avshister.domain.User
 import com.olga.avshister.services.OwnerService
 import com.olga.avshister.services.UsersService
@@ -57,6 +59,27 @@ class OwnerController(private val call: ApplicationCall) {
                     call.respond(HttpStatusCode.OK)
                 } else {
                     call.respond(HttpStatusCode.Forbidden, "Удалять точки аренды может только владелец")
+                }
+            } ?: run {
+                call.respond(
+                    HttpStatusCode.Unauthorized,
+                    "Необходима авторизация"
+                )
+            }
+        } catch (e: Exception) {
+            call.respond(HttpStatusCode.BadRequest, message = "message: ${e.message}, cause: ${e.cause}")
+        }
+    }
+
+    suspend fun registerRentPoint(token: String, rentPoint: RentPoint) {
+        try {
+            UsersService.getUserByToken(token)?.let { loggedUser ->
+                if (loggedUser.role == User.Role.OWNER) {
+
+                    OwnerService.registerRentPoint(rentPoint)
+                    call.respond(HttpStatusCode.OK)
+                } else {
+                    call.respond(HttpStatusCode.Forbidden, "Создавать новые точки аренды может только владелец")
                 }
             } ?: run {
                 call.respond(

@@ -13,6 +13,7 @@ import com.olga.avshister.features.utils.RentPointUtils
 import org.jetbrains.exposed.v1.core.dao.id.LongIdTable
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.jdbc.deleteWhere
+import org.jetbrains.exposed.v1.jdbc.insert
 import org.jetbrains.exposed.v1.jdbc.insertAndGetId
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
@@ -79,6 +80,20 @@ object RentPointTable: LongIdTable("rent_points") {
             ProductTable.deleteWhere { ProductTable.rentPointId eq rentPointId }
             // Затем саму точку аренды
             RentPointTable.deleteWhere { RentPointTable.id eq rentPointId }
+        }
+    }
+
+    fun registerRentPoint(
+        rentPoint: RentPoint
+    ) {
+        transaction {
+            RentPointTable.insert {
+                it[RentPointTable.name] = rentPoint.name
+                it[RentPointTable.address] = rentPoint.address
+                it[RentPointTable.latitude] = rentPoint.latitude
+                it[RentPointTable.longitude] = rentPoint.longitude
+                it[RentPointTable.workHours] = rentPoint.workHours
+            }
         }
     }
 
