@@ -21,7 +21,17 @@ fun Application.configureDatabases() {
 
     log.info("Using Railway DB")
 
-    val jdbcUrl = databaseUrl.replace("postgres://", "jdbc:postgresql://")
+    val jdbcUrl = when {
+        databaseUrl.startsWith("jdbc:") -> databaseUrl
+
+        databaseUrl.startsWith("postgresql://") ->
+            databaseUrl.replace("postgresql://", "jdbc:postgresql://")
+
+        databaseUrl.startsWith("postgres://") ->
+            databaseUrl.replace("postgres://", "jdbc:postgresql://")
+
+        else -> throw IllegalArgumentException("Unknown DATABASE_URL format: $databaseUrl")
+    }
 
     val config = HikariConfig().apply {
         this.jdbcUrl = jdbcUrl
