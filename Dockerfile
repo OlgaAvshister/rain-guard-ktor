@@ -1,8 +1,16 @@
+FROM gradle:8.7-jdk21 AS builder
+
+WORKDIR /app
+
+COPY . .
+
+RUN gradle shadowJar
+
 FROM eclipse-temurin:21-jre
 
 WORKDIR /app
 
-COPY build/libs/*all.jar app.jar
+COPY --from=builder /app/build/libs/*all.jar app.jar
 
 EXPOSE 8080
 

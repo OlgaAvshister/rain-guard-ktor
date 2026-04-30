@@ -6,6 +6,8 @@ import com.olga.avshister.database.table.RentPointTable
 import com.olga.avshister.database.table.RentTable
 import com.olga.avshister.database.table.TokenTable
 import com.olga.avshister.database.table.UserTable
+import com.zaxxer.hikari.HikariConfig
+import com.zaxxer.hikari.HikariDataSource
 import io.ktor.server.application.Application
 import io.ktor.server.application.log
 import org.jetbrains.exposed.v1.jdbc.Database
@@ -13,7 +15,16 @@ import org.jetbrains.exposed.v1.jdbc.SchemaUtils
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 
 fun Application.configureDatabases() {
-    configureLocalDatabase()
+
+    val databaseUrl = System.getenv("DATABASE_URL")
+
+    if (databaseUrl != null) {
+        log.info("Используем Railway PostgreSQL")
+        connectRemoteDatabase(databaseUrl)
+    } else {
+        log.info("Используем локальную БД")
+        connectLocalDatabase()
+    }
 
     try {
         transaction {
@@ -27,7 +38,25 @@ fun Application.configureDatabases() {
     }
 }
 
-fun configureLocalDatabase() {
+private fun connectRemoteDatabase(databaseUrl: String) {
+    val jdbcUrl = databaseUrl
+        .replace("postgres://", "jdbc:postgresql://")
+        .replace("postgresql://", "jdbc:postgresql://")
+
+    val config = HikariConfig().apply {
+        this.jdbcUrl = jdbcUrl
+        driverClassName = "org.postgresql.Driver"
+        maximumPoolSize = 10
+        isAutoCommit = false
+    }
+
+    val dataSource = HikariDataSource(config)
+    Database.connect(dataSource)
+
+    createTables()
+}
+
+private fun connectLocalDatabase() {
     Database.connect(
         url = "jdbc:postgresql://localhost:5432/RainGuardLocal",
         driver = "org.postgresql.Driver",
@@ -35,6 +64,10 @@ fun configureLocalDatabase() {
         password = "" // для локальной БД пароль не нужен, только user
     )
 
+    createTables()
+}
+
+private fun createTables() {
     transaction {
         // если перечисленных таблиц еще нет, то они будут созданы
         SchemaUtils.create(UserTable)
