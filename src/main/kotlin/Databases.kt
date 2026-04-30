@@ -17,31 +17,11 @@ import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 fun Application.configureDatabases() {
 
     val databaseUrl = System.getenv("DATABASE_URL")
+        ?: error("DATABASE_URL is missing (Railway env not configured)")
 
-    if (databaseUrl != null) {
-        log.info("Используем Railway PostgreSQL")
-        connectRemoteDatabase(databaseUrl)
-    } else {
-        log.info("Используем локальную БД")
-        connectLocalDatabase()
-    }
+    log.info("Using Railway DB")
 
-    try {
-        transaction {
-            // Простой запрос, который не требует существования таблиц, просто пинг таблицы
-            exec("SELECT 1")
-        }
-        log.info("Подключение к БД успешно!")
-    } catch (e: Exception) {
-        log.error("Ошибка подключения к БД: ${e.message}")
-        e.printStackTrace()
-    }
-}
-
-private fun connectRemoteDatabase(databaseUrl: String) {
-    val jdbcUrl = databaseUrl
-        .replace("postgres://", "jdbc:postgresql://")
-        .replace("postgresql://", "jdbc:postgresql://")
+    val jdbcUrl = databaseUrl.replace("postgres://", "jdbc:postgresql://")
 
     val config = HikariConfig().apply {
         this.jdbcUrl = jdbcUrl
@@ -50,21 +30,11 @@ private fun connectRemoteDatabase(databaseUrl: String) {
         isAutoCommit = false
     }
 
-    val dataSource = HikariDataSource(config)
-    Database.connect(dataSource)
+    Database.connect(HikariDataSource(config))
 
     createTables()
-}
 
-private fun connectLocalDatabase() {
-    Database.connect(
-        url = "jdbc:postgresql://localhost:5432/RainGuardLocal",
-        driver = "org.postgresql.Driver",
-        user = "user_server",
-        password = "" // для локальной БД пароль не нужен, только user
-    )
-
-    createTables()
+    log.info("DB connected successfully")
 }
 
 private fun createTables() {
