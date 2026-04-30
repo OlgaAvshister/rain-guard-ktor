@@ -1,10 +1,11 @@
-FROM gradle:8.7-jdk21 AS builder
+FROM eclipse-temurin:21-jre AS builder
 
 WORKDIR /app
 
 COPY . .
 
-RUN gradle shadowJar
+RUN chmod +x ./gradlew
+RUN ./gradlew shadowJar
 
 FROM eclipse-temurin:21-jre
 
